@@ -20,7 +20,7 @@ function setPopup(popup) {
 function handleMessage(message, sender, sendResponse) {
     if (message.action === 'START') {
         startScraping();
-        // interval = setInterval(startScraping, message.intervalInSeconds);
+        interval = setInterval(startScraping, message.intervalInSeconds);
     } else if (message.action === 'STOP') {
         if (interval) {
             clearInterval(interval);
