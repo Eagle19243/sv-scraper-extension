@@ -1,0 +1,47 @@
+{
+    "name": "Stubhub/VividSeats Scraper",
+    "version": "1.0.0",
+    "description": "This chrome extension will grab the listings from Stubhub/VividSeats events.",
+    "manifest_version": 2,
+    "icons": {
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png"
+    },
+    "browser_action": {
+        "default_icon": "images/icon-48.png",
+        "default_title": "Stubhub/VividSeats Scraper"
+    },
+    "background": {
+        "scripts": [
+            "vendors/jquery/jquery.min.js",
+            "js/config.js",
+            "js/api.js",
+            "js/global.js",
+            "js/background.js"
+        ],
+        "persistent": true
+    },
+    "content_scripts": [
+        {
+            "matches": [
+              "https://www.stubhub.com/*",
+              "https://www.vividseats.com/*"
+            ],
+            "js": [
+              "vendors/jquery/jquery.min.js",
+              "js/stubhub.js",
+              "js/vividseats.js",
+              "js/content.js"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions": [
+        "storage",
+        "activeTab",
+        "http://127.0.0.1:5000/*"
+    ]
+}
+  

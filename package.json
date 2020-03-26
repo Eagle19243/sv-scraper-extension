@@ -1,0 +1,9 @@
+{
+  "name": "sv-scraper",
+  "version": "1.0.0",
+  "description": "This chrome extension will grab the listings from Stubhub/VividSeats events.",
+  "scripts": {
+    "pack": "rm *.zip; cd public; zip -r ../sv-scraper.zip *"
+  },
+  "author": "Eagle19243"
+}
