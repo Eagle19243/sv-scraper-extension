@@ -36,6 +36,12 @@ async function startScraping() {
         tabId          = await openURL(events[i], tabId);
         const listings = await getListings(tabId);
 
+        await new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 10000);
+        });
+
         if (listings) {
             await saveListings(listings, i === 0);
         }
