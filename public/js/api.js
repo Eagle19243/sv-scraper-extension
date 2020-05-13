@@ -21,6 +21,7 @@ async function getEvents() {
 }
 
 async function saveListings(listings, shouldReset) {
+    console.log('saveListings', listings[0].url);
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `${URL_API}/save_listings`,

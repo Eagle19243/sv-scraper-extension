@@ -3,7 +3,7 @@ window.onload = async function() {
     chrome.runtime.onMessage.addListener(handleMessage);
 
     if (isStubhub() && getStubhubEventId()) {
-        svListings = await scrapeStubhub(getStubhubEventId());
+        svListings = await scrapeStubhub();
     } else if (isVividSeats() && getVividSeatsEventId()) {
         svListings = await scrapeVividSeats(getVividSeatsEventId());
     }

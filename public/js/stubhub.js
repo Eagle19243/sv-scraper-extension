@@ -1,63 +1,61 @@
-function scrapeStubhub(eventId) {
-    return new Promise((resolve) => {
-        $.ajax({
-            url: 'https://www.stubhub.com/bfx/api/search/inventory/v2/listings',
-            method: 'GET',
-            data: {
-                'additionalPricingInfo' : true,
-                'allSectionZoneStats'   : true,
-                'allSectionZoneStats'   : true,
-                'eventLevelStats'       : true,
-                'eventPricingSummary'   : true,
-                'eventPricingSummary'   : true,
-                'pricingSummary'        : true,
-                'quantitySummary'       : true,
-                'sectionStats'          : true, 
-                'shstore'               : 1,
-                'start'                 : 0,
-                'urgencyMessaging'      : true,
-                'valuePercentage'       : true,
-                'zoneStats'             : true,
-                'scoreVersion'          : 'v2',
-                'eventId'               : eventId,
-                'rows'                  : 200,
-                'sort'                  : 'price asc, value desc',
-                'priceType'             : 'nonBundledPrice'
-            },
-            success: (data) => {
-                const listings = [];
-                const title    = $('.EventName__eventName').text();
+function scrapeStubhub() {
+    return new Promise(async (resolve) => {
+        await autoScroll();
 
-                for (const listing of data.listing) {
-                    const section = listing.sectionName;
-                    const price = listing.price.amount;
-                    const seatNums = [];
-                    let row = '';
+        const listings = [];
+        const title    = $('.EventName__eventName').text();
+        const items = $('.RoyalTicketListPanel');
 
-                    for (const seat of listing.seats) {
-                        row = seat.row;
-                        if (seat.seatNumber && Number.isInteger(seat.seatNumber)) {
-                            seatNums.push(seat.seatNumber);
-                        }
-                    }
+        for (const item of items) {
 
-                    listings.push({
-                        title: title,
-                        price: price,
-                        section: section,
-                        num: seatNums.join(', '),
-                        row: row,
-                        quantity: listing.seats.length,
-                        brand: 0,
-                        url: location.href
-                    });
-                }
+            const sectionEl  = $(item).find('.SectionRowSeat__sectionTitle.RoyalTicketListPanel__SectionName');
+            const priceEl    = $(item).find('.PriceDisplay__price span');
+            const rowEl      = $(item).find('.SectionRowSeat__row');
+            const quantityEl = $(item).find('.RoyalTicketListPanel__SecondaryInfo span:nth-child(3)');
 
-                resolve(listings);
-            },
-            error: () => {
-                resolve([]);
+            const section  = sectionEl.text();
+            const price    = Number(priceEl.text().substr(1).replace(/,/g, ''));
+            const row      = rowEl.text().substr(4);
+
+            const tmpAry = quantityEl.text().split('-');
+            let quantity = 0;
+            
+            if (tmpAry.length > 1) {
+                quantity = Number(tmpAry[tmpAry.length - 1].replace('tickets', '').trim());
+            } else {
+                quantity = Number(tmpAry[0].replace('tickets', '').trim());
             }
-        });
+
+            listings.push({
+                title: title,
+                price: price,
+                section: section,
+                num: '',
+                row: row,
+                quantity: quantity,
+                brand: 0,
+                url: location.href
+            });
+        }
+
+        resolve(listings);
+    });
+}
+
+async function autoScroll() {
+    return new Promise((resolve) => {
+        let attempt = 0;
+
+        const loop = setInterval(() => {
+            const containerEl  = $('.RoyalTicketList__container');
+            containerEl.scrollTop(containerEl[0].scrollHeight);
+            
+            attempt ++;
+
+            if (attempt > 60) {
+                clearInterval(loop);
+                resolve();
+            }
+        }, 1000);
     });
 }
