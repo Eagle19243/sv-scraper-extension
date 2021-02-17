@@ -43,7 +43,7 @@ async function startScraping() {
         tabId          = await openURL(events[i], tabId);
         const listings = await getListings(tabId);
 
-        if (listings) {
+        if (listings && listings.length > 0) {
             await saveListings(listings, i === 0);
         }
 

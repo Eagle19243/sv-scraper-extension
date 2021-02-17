@@ -48,6 +48,13 @@ async function autoScroll() {
 
         const loop = setInterval(() => {
             const containerEl  = $('.RoyalTicketList__container');
+
+            if (containerEl.length === 0) {
+                clearInterval(loop);
+                resolve();
+                return;
+            }
+            
             containerEl.scrollTop(containerEl[0].scrollHeight);
             
             attempt ++;
