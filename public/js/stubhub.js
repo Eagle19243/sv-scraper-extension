@@ -3,27 +3,29 @@ function scrapeStubhub() {
         await autoScroll();
 
         const listings = [];
-        const title    = $('.EventName__eventName').text();
+        const title    = $('h1.event-title').text();
         const items = $('.RoyalTicketListPanel');
 
         for (const item of items) {
 
             const sectionEl  = $(item).find('.SectionRowSeat__sectionTitle.RoyalTicketListPanel__SectionName');
-            const priceEl    = $(item).find('.PriceDisplay__price span');
+            const priceEl    = $(item).find('.PriceDisplay__price');
             const rowEl      = $(item).find('.SectionRowSeat__row');
-            const quantityEl = $(item).find('.RoyalTicketListPanel__SecondaryInfo span:nth-child(3)');
+            const quantityEl = $(item).find('.RoyalTicketListPanel__SecondaryInfo').clone();
 
             const section  = sectionEl.text();
             const price    = Number(priceEl.text().substr(1).replace(/,/g, ''));
             const row      = rowEl.text().substr(4);
 
-            const tmpAry = quantityEl.text().split('-');
+            $(quantityEl).find('span').remove();
+            $(quantityEl).find('hr').remove();
+            const tmpAry = $(quantityEl).text().split('-');
             let quantity = 0;
             
             if (tmpAry.length > 1) {
-                quantity = Number(tmpAry[tmpAry.length - 1].replace('tickets', '').trim());
+                quantity = Number(tmpAry[tmpAry.length - 1].replace(/\D+/g, '').trim());
             } else {
-                quantity = Number(tmpAry[0].replace('tickets', '').trim());
+                quantity = Number(tmpAry[0].replace(/\D+/g, '').trim());
             }
 
             listings.push({

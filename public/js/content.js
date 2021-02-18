@@ -2,6 +2,10 @@ let svListings = null;
 window.onload = async function() {
     chrome.runtime.onMessage.addListener(handleMessage);
 
+    await new Promise((resolve) => {
+        setTimeout(() => { resolve(); }, 10000);
+    });
+    
     if (isStubhub() && getStubhubEventId()) {
         svListings = await scrapeStubhub();
     } else if (isVividSeats() && getVividSeatsEventId()) {
